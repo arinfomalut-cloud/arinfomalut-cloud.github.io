@@ -3,140 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Check-in App</title>
+    <title>Telegram Check-in Premium</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #0088cc;
-            --primary-hover: #0077b5;
-            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            --glass-bg: rgba(255, 255, 255, 0.05);
+            --primary-hover: #00aaff;
+            --glass-bg: rgba(20, 25, 35, 0.45);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --text-color: #ffffff;
-            --font-family: 'Outfit', sans-serif;
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: var(--font-family);
+            font-family: 'Outfit', sans-serif;
         }
 
         body {
-            background: var(--bg-gradient);
+            /* Animated Mesh Gradient Background */
+            background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #001f3f, #006b99);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--text-color);
+            color: var(--text-main);
             padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
             background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
+            border-radius: 28px;
             padding: 40px;
             width: 100%;
-            max-width: 450px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            max-width: 480px;
+            box-shadow: var(--glass-shadow), inset 0 0 0 1px rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient Glow Behind Container */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 170, 255, 0.15) 0%, transparent 60%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 25px;
-            font-weight: 600;
-            font-size: 24px;
+            margin-bottom: 35px;
+            font-weight: 700;
+            font-size: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        .input-group {
-            margin-bottom: 20px;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 12px;
+        .section-card {
+            background: rgba(0, 0, 0, 0.25);
             border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section-card:hover {
+            background: rgba(0, 0, 0, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: rgba(255,255,255,0.15);
         }
 
         label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
             font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
         }
 
         textarea {
             width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.4);
             color: white;
             font-size: 14px;
             outline: none;
             resize: vertical;
-            min-height: 100px;
-            margin-top: 10px;
+            min-height: 120px;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            line-height: 1.5;
         }
+
+        textarea:focus {
+            border-color: var(--primary-hover);
+            box-shadow: 0 0 15px rgba(0, 170, 255, 0.3), inset 0 2px 5px rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Custom Scrollbar for Textarea */
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 8px; }
+        textarea::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 8px; }
+        textarea::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
 
         button {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: none;
-            border-radius: 8px;
+            border-radius: 14px;
             background: var(--primary);
             color: white;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
         }
 
-        button:hover { background: var(--primary-hover); transform: translateY(-1px); }
-        button:active { transform: scale(0.98); }
-        button:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
+        /* Button Shine Effect */
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-20deg);
+            transition: all 0.5s ease;
+        }
+        button:hover::after { left: 150%; }
+
+        button:hover { 
+            background: var(--primary-hover); 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(0, 170, 255, 0.5);
+        }
+        button:active { transform: scale(0.97); }
+        button:disabled { background: #444; box-shadow: none; cursor: not-allowed; opacity: 0.7; transform: none; }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: none;
         }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.25); }
+        .btn-secondary:hover { 
+            background: rgba(255, 255, 255, 0.2); 
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0088cc, #00aaff);
+            font-size: 18px;
+            padding: 16px;
+            margin-top: 10px;
+        }
 
         #cameraFeed, #photoPreview {
             width: 100%;
-            border-radius: 8px;
-            margin-top: 10px;
+            border-radius: 12px;
+            margin-top: 15px;
             display: none;
-            background: black;
+            background: #000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
         #status {
-            margin-top: 15px;
+            margin-top: 20px;
             text-align: center;
             font-size: 14px;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 12px;
             display: none;
+            font-weight: 500;
+            animation: slideUp 0.3s ease forwards;
         }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .status-show { display: block !important; }
-        .success { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
-        .error { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+        .success { background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+        .error { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
         
-        .tg-icon { width: 28px; height: 28px; fill: #0088cc; }
+        .tg-icon { width: 34px; height: 34px; fill: #00aaff; filter: drop-shadow(0 2px 8px rgba(0,170,255,0.4)); }
         .tg-icon-circle { fill: white; }
     </style>
 </head>
@@ -152,25 +244,33 @@
     </h2>
     
     <!-- Bagian 1: Lokasi & Data -->
-    <div class="input-group">
+    <div class="section-card">
         <label>📍 Data Perangkat & Lokasi</label>
-        <button type="button" class="btn-secondary" onclick="getMetadata()">Tarik Lokasi & IP Address</button>
+        <button type="button" class="btn-secondary" onclick="getMetadata()">
+            <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Tarik Lokasi & IP Address
+        </button>
         <textarea id="messageText" placeholder="Data lokasi, IP, dan Perangkat akan muncul di sini..."></textarea>
     </div>
 
     <!-- Bagian 2: Kamera -->
-    <div class="input-group">
+    <div class="section-card">
         <label>📷 Ambil Foto Selfie</label>
-        <button type="button" class="btn-secondary" id="startCamBtn" onclick="openCamera()">Buka Kamera</button>
+        <button type="button" class="btn-secondary" id="startCamBtn" onclick="openCamera()">
+            <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
+            Buka Kamera
+        </button>
         <video id="cameraFeed" autoplay playsinline></video>
-        <button type="button" id="captureBtn" style="display:none;" onclick="capturePhoto()">📸 Jepret Foto</button>
+        <button type="button" id="captureBtn" class="btn-secondary" style="display:none; margin-top:10px; background: rgba(0, 136, 204, 0.2);" onclick="capturePhoto()">
+            📸 Jepret Foto Sekarang
+        </button>
         <img id="photoPreview" alt="Hasil Foto">
     </div>
 
     <!-- Tombol Kirim Utama -->
-    <button id="sendBtn" onclick="sendToTelegram()">
+    <button id="sendBtn" class="btn-primary" onclick="sendToTelegram()">
         <span>Kirim Laporan</span>
-        <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
     </button>
 
     <div id="status"></div>
@@ -184,10 +284,9 @@
     let cameraStream = null;
     let imageBlob = null;
 
-    // Fungsi 1: Mengambil Lokasi GPS, IP, dan User Agent
     async function getMetadata() {
         const textArea = document.getElementById("messageText");
-        textArea.value = "Sedang mengambil data...";
+        textArea.value = "⏳ Sedang mengambil data...";
         
         let ipInfo = "IP tidak ditemukan";
         try {
@@ -215,7 +314,6 @@
         }
     }
 
-    // Fungsi 2: Membuka Kamera
     async function openCamera() {
         const video = document.getElementById('cameraFeed');
         const startCamBtn = document.getElementById('startCamBtn');
@@ -235,38 +333,31 @@
         }
     }
 
-    // Fungsi 3: Menjepret Foto
     function capturePhoto() {
         const video = document.getElementById('cameraFeed');
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         
-        // Gambar frame dari video ke canvas
         canvas.getContext('2d').drawImage(video, 0, 0);
         
-        // Ubah canvas menjadi file Blob (gambar JPEG)
         canvas.toBlob((blob) => {
             imageBlob = blob;
             
-            // Tampilkan hasil
             const img = document.getElementById('photoPreview');
             img.src = URL.createObjectURL(blob);
             img.style.display = 'block';
             
-            // Matikan kamera
             cameraStream.getTracks().forEach(track => track.stop());
             video.style.display = 'none';
             document.getElementById('captureBtn').style.display = 'none';
             
-            // Ubah tombol buka kamera jadi retake
             const startCamBtn = document.getElementById('startCamBtn');
-            startCamBtn.innerText = "Ulangi Foto";
+            startCamBtn.innerHTML = `<svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Ulangi Foto`;
             startCamBtn.style.display = 'flex';
-        }, 'image/jpeg', 0.8);
+        }, 'image/jpeg', 0.85);
     }
 
-    // Fungsi 4: Kirim Semua Data ke Telegram
     async function sendToTelegram() {
         const text = document.getElementById("messageText").value.trim();
         const btn = document.getElementById("sendBtn");
@@ -275,7 +366,7 @@
         statusEl.classList.remove("status-show", "success", "error");
 
         if (!text && !imageBlob) {
-            showStatus("⚠️ Tidak ada data yang dikirim. Ambil lokasi atau foto terlebih dahulu.", "error");
+            showStatus("⚠️ Harap ambil lokasi atau foto terlebih dahulu.", "error");
             return;
         }
 
@@ -285,7 +376,6 @@
         try {
             let response;
 
-            // Jika ada foto, gunakan sendPhoto
             if (imageBlob) {
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
                 const formData = new FormData();
@@ -294,9 +384,7 @@
                 if (text) formData.append("caption", text);
 
                 response = await fetch(url, { method: "POST", body: formData });
-            } 
-            // Jika tidak ada foto, hanya kirim text
-            else {
+            } else {
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
                 response = await fetch(url, {
                     method: "POST",
@@ -307,12 +395,12 @@
 
             const data = await response.json();
             if (data.ok) {
-                showStatus("✅ Data berhasil dikirim ke Telegram!", "success");
+                showStatus("✅ Laporan berhasil dikirim ke Telegram!", "success");
             } else {
                 showStatus(`❌ Gagal: ${data.description}`, "error");
             }
         } catch (error) {
-            showStatus(`🔌 Terjadi kesalahan koneksi!`, "error");
+            showStatus(`🔌 Terjadi kesalahan koneksi jaringan!`, "error");
         } finally {
             btn.disabled = false;
             btn.querySelector("span").innerText = "Kirim Laporan";
