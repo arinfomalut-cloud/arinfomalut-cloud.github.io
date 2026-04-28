@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Check-in App</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0088cc;
+            --primary-hover: #0077b5;
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+            --font-family: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 14px;
+            outline: none;
+            resize: vertical;
+            min-height: 100px;
+            margin-top: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        button:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.25); }
+
+        #cameraFeed, #photoPreview {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            background: black;
+        }
+
+        #status {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+        .status-show { display: block !important; }
+        .success { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+        .error { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+        
+        .tg-icon { width: 28px; height: 28px; fill: #0088cc; }
+        .tg-icon-circle { fill: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>
+        <svg class="tg-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="12" class="tg-icon-circle"/>
+            <path d="M17.48 7.37c-.15-1.58-.8-5.42-1.13-7.19-.14-.75-.42-1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.11.03-1.84 1.18-5.2 3.45-.49.34-.94.5-1.35.49-.45-.01-1.32-.26-1.96-.47-.79-.26-1.42-.4-1.37-.85.03-.23.35-.47.96-.73 3.77-1.64 6.29-2.73 7.55-3.25 3.59-1.49 4.34-1.75 4.83-1.76.11 0 .35.03.48.14.11.09.14.22.15.33-.01.07-.01.19-.03.3z" transform="translate(1.5, 3.5) scale(0.85)"/>
+        </svg>
+        Telegram Check-in
+    </h2>
+    
+    <!-- Bagian 1: Lokasi & Data -->
+    <div class="input-group">
+        <label>📍 Data Perangkat & Lokasi</label>
+        <button type="button" class="btn-secondary" onclick="getMetadata()">Tarik Lokasi & IP Address</button>
+        <textarea id="messageText" placeholder="Data lokasi, IP, dan Perangkat akan muncul di sini..."></textarea>
+    </div>
+
+    <!-- Bagian 2: Kamera -->
+    <div class="input-group">
+        <label>📷 Ambil Foto Selfie</label>
+        <button type="button" class="btn-secondary" id="startCamBtn" onclick="openCamera()">Buka Kamera</button>
+        <video id="cameraFeed" autoplay playsinline></video>
+        <button type="button" id="captureBtn" style="display:none;" onclick="capturePhoto()">📸 Jepret Foto</button>
+        <img id="photoPreview" alt="Hasil Foto">
+    </div>
+
+    <!-- Tombol Kirim Utama -->
+    <button id="sendBtn" onclick="sendToTelegram()">
+        <span>Kirim Laporan</span>
+        <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+
+    <div id="status"></div>
+</div>
+
+<script>
+    const BOT_TOKEN = "8771972979:AAG9Z5INVkhgA8U9MqoZE4wkmh9iltvSnuk";
+    const urlParams = new URLSearchParams(window.location.search);
+    const CHAT_ID = urlParams.get('chat_id') || "1350680591";
+
+    let cameraStream = null;
+    let imageBlob = null;
+
+    // Fungsi 1: Mengambil Lokasi GPS, IP, dan User Agent
+    async function getMetadata() {
+        const textArea = document.getElementById("messageText");
+        textArea.value = "Sedang mengambil data...";
+        
+        let ipInfo = "IP tidak ditemukan";
+        try {
+            const res = await fetch('https://api.ipify.org?format=json');
+            const data = await res.json();
+            ipInfo = data.ip;
+        } catch (e) { console.error("Gagal ambil IP", e); }
+
+        const userAgent = navigator.userAgent;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    textArea.value = `📍 Lokasi:\nhttps://maps.google.com/?q=${lat},${lon}\n\n🌐 IP Address:\n${ipInfo}\n\n📱 Perangkat (Meta):\n${userAgent}`;
+                },
+                (err) => {
+                    textArea.value = `📍 Lokasi: Gagal diakses (${err.message})\n\n🌐 IP Address:\n${ipInfo}\n\n📱 Perangkat (Meta):\n${userAgent}`;
+                    alert("Akses lokasi ditolak atau gagal didapatkan.");
+                }
+            );
+        } else {
+            textArea.value = `📍 Lokasi: Browser tidak mendukung\n\n🌐 IP Address:\n${ipInfo}\n\n📱 Perangkat (Meta):\n${userAgent}`;
+        }
+    }
+
+    // Fungsi 2: Membuka Kamera
+    async function openCamera() {
+        const video = document.getElementById('cameraFeed');
+        const startCamBtn = document.getElementById('startCamBtn');
+        const captureBtn = document.getElementById('captureBtn');
+        const photoPreview = document.getElementById('photoPreview');
+        
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+            video.srcObject = cameraStream;
+            video.style.display = 'block';
+            photoPreview.style.display = 'none';
+            captureBtn.style.display = 'flex';
+            startCamBtn.style.display = 'none';
+        } catch (err) {
+            alert("Gagal mengakses kamera. Pastikan browser memiliki izin kamera.");
+            console.error(err);
+        }
+    }
+
+    // Fungsi 3: Menjepret Foto
+    function capturePhoto() {
+        const video = document.getElementById('cameraFeed');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // Gambar frame dari video ke canvas
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        
+        // Ubah canvas menjadi file Blob (gambar JPEG)
+        canvas.toBlob((blob) => {
+            imageBlob = blob;
+            
+            // Tampilkan hasil
+            const img = document.getElementById('photoPreview');
+            img.src = URL.createObjectURL(blob);
+            img.style.display = 'block';
+            
+            // Matikan kamera
+            cameraStream.getTracks().forEach(track => track.stop());
+            video.style.display = 'none';
+            document.getElementById('captureBtn').style.display = 'none';
+            
+            // Ubah tombol buka kamera jadi retake
+            const startCamBtn = document.getElementById('startCamBtn');
+            startCamBtn.innerText = "Ulangi Foto";
+            startCamBtn.style.display = 'flex';
+        }, 'image/jpeg', 0.8);
+    }
+
+    // Fungsi 4: Kirim Semua Data ke Telegram
+    async function sendToTelegram() {
+        const text = document.getElementById("messageText").value.trim();
+        const btn = document.getElementById("sendBtn");
+        const statusEl = document.getElementById("status");
+
+        statusEl.classList.remove("status-show", "success", "error");
+
+        if (!text && !imageBlob) {
+            showStatus("⚠️ Tidak ada data yang dikirim. Ambil lokasi atau foto terlebih dahulu.", "error");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.querySelector("span").innerText = "Mengirim...";
+
+        try {
+            let response;
+
+            // Jika ada foto, gunakan sendPhoto
+            if (imageBlob) {
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+                const formData = new FormData();
+                formData.append("chat_id", CHAT_ID);
+                formData.append("photo", imageBlob, "photo.jpg");
+                if (text) formData.append("caption", text);
+
+                response = await fetch(url, { method: "POST", body: formData });
+            } 
+            // Jika tidak ada foto, hanya kirim text
+            else {
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: text })
+                });
+            }
+
+            const data = await response.json();
+            if (data.ok) {
+                showStatus("✅ Data berhasil dikirim ke Telegram!", "success");
+            } else {
+                showStatus(`❌ Gagal: ${data.description}`, "error");
+            }
+        } catch (error) {
+            showStatus(`🔌 Terjadi kesalahan koneksi!`, "error");
+        } finally {
+            btn.disabled = false;
+            btn.querySelector("span").innerText = "Kirim Laporan";
+        }
+    }
+
+    function showStatus(msg, type) {
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = msg;
+        statusEl.className = type + " status-show";
+    }
+</script>
+
+</body>
+</html>
